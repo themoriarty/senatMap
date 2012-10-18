@@ -1,0 +1,14 @@
+#layer1 text{
+    cursor: pointer;
+}
+div{
+    text-size: 1em;
+}
+.hint{
+    border: 1px solid;
+    background-color: #AAAAAA;
+    position: absolute;
+}
+#templates{
+    display: none;
+}
