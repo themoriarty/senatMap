@@ -5,11 +5,21 @@ $(window).load(function(){
     });
 });
 
+function getResourceImg(resource){
+    return "/static/" + {"Овцы": "sheep", "Зерно": "grain", "Вино": "grape", "Металл": "rock"}[resource] + ".png";
+}
+
+function callback(data){
+    g_data = data;
+    renderResources();
+}
+
 function reloadData(){
-    $.getJSON("/data.js", function(data){
+    //$.getJSON("/data.js", function(data){
+    $.getScript("http://senat-billing.info/provins_data.js");/*, function(data){
 	g_data = data;
 	renderResources();
-    });
+    });*/
     setTimeout(reloadData, 1000 * 60); // reload is unrelated to the actual callback
 }
 
@@ -43,7 +53,7 @@ function createHint(key, left, top){
 	    $("." + k, element).text(data[k]);
 	}
 	icon = $(clone("iconTemplate"));
-	icon.attr("src", "/static/" + data.resource + ".png");
+	icon.attr("src", getResourceImg(data.resource));
 	$(element).append(icon);
 	return element;
     }
@@ -95,7 +105,7 @@ function renderResources(){
 		icon = $(clone("iconTemplate"));
 		exists = false;
 	    }
-	    icon.attr("src", "/static/" + g_data[key].resource + ".png");
+	    icon.attr("src", getResourceImg(g_data[key].resource));
 	    setData(this, "res", $(icon));
 	    if (!exists){
 		var left = $(this).parent().position().left;
