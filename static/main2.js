@@ -119,7 +119,7 @@ function renderResources(){
 
 function main(root){
     var svg = $("#map svg");
-    svg.width(1000);
+    svg.width(2000);
     $("#layer1 image").remove();
     $("#layer1 tspan", svg).hover(function(e){
 	showHint($(this));
