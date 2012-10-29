@@ -15,11 +15,8 @@ function callback(data){
 }
 
 function reloadData(){
-    //$.getJSON("/data.js", function(data){
-    $.getScript("http://senat-billing.info/provins_data.js");/*, function(data){
-	g_data = data;
-	renderResources();
-    });*/
+    //$.getScript("http://senat-billing.info/provins_data.js");
+    $.getScript("/data.js");
     setTimeout(reloadData, 1000 * 60); // reload is unrelated to the actual callback
 }
 
@@ -96,7 +93,7 @@ function hideHint(tspan){
 }
 
 function renderResources(){
-    $("#layer1 tspan").each(function(){
+    $("tspan").each(function(){
 	var key = getKey(this);
 	if (g_data[key]){
 	    var icon = getData(this, "res");
@@ -115,13 +112,42 @@ function renderResources(){
 	    }
 	}
     });
+    var roaded = new Object();
+    for (var p_id in g_data){
+	var p = g_data[p_id];
+	if (p["road"] == "1"){
+	    roaded[p_id] = 1;
+	}
+    }
+    $("g").filter(function(){return $(this).attr("inkscape:label") == "roads2"}).find("path").each(function(){
+	var ids = $(this).attr("id").match(/r(\d+)-(\d+)/);
+	if (ids){
+	    var p1 = ids[0];
+	    var p2 = ids[1];
+	    if (!(roaded[p1] && roaded[p2])){
+		$(this).hide();
+	    }
+	}
+    });
+    for (var p_id in roaded){
+	for (var p2_id in roaded){
+	    var e = $("#r" + p_id + "-" + p2_id);
+	    if (!e){
+		e = $("#r" + p2_id + "-" + p_id)
+	    }
+	    if (e){
+		e.show();
+	    }
+	}
+    }
 }
 
 function main(root){
     var svg = $("#map svg");
     svg.width(2000);
-    $("#layer1 image").remove();
-    $("#layer1 tspan", svg).hover(function(e){
+    $("g", svg).filter(function(){return $(this).attr("inkscape:label") == "roads2"}).find("path").hide();
+    $("image", svg).remove();
+    $("tspan", svg).hover(function(e){
 	showHint($(this));
     }, function(){
 	var self = this;
