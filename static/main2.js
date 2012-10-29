@@ -6,17 +6,34 @@ $(window).load(function(){
 });
 
 function getResourceImg(resource){
-    return "/static/" + {"Овцы": "sheep", "Зерно": "grain", "Вино": "grape", "Металл": "rock"}[resource] + ".png";
+    if (g_legions){
+	if (resource.legions){
+	    return "/static/legion.png";
+	}
+    } else
+    {
+	return "/static/" + {"Овцы": "sheep", "Зерно": "grain", "Вино": "grape", "Металл": "rock"}[resource.resource] + ".png";
+    }
 }
 
 function callback(data){
-    g_data = data;
+    for (var k in data){
+	if (g_data[k]){
+	    var src = data[k];
+	    var dst = g_data[k];
+	    for (var i in src){
+		dst[i] = src[i];
+	    }
+	} else{
+	    g_data[k] = data[k];
+	}
+    }
     renderResources();
 }
 
 function reloadData(){
-    //$.getScript("http://senat-billing.info/provins_data.js");
-    $.getScript("/data.js");
+    $.getScript("http://senat-billing.info/provins_data.js");
+    $.getScript("http://senat-billing.info/legions_data.js");
     setTimeout(reloadData, 1000 * 60); // reload is unrelated to the actual callback
 }
 
@@ -49,9 +66,11 @@ function createHint(key, left, top){
 	for (var k in data){
 	    $("." + k, element).text(data[k]);
 	}
-	icon = $(clone("iconTemplate"));
-	icon.attr("src", getResourceImg(data.resource));
-	$(element).append(icon);
+	if (getResourceImg(data)){
+	    icon = $(clone("iconTemplate"));
+	    icon.attr("src", getResourceImg(data));
+	    $(element).append(icon);
+	}
 	return element;
     }
 }
@@ -95,14 +114,14 @@ function hideHint(tspan){
 function renderResources(){
     $("tspan").each(function(){
 	var key = getKey(this);
-	if (g_data[key]){
+	if (g_data[key] && getResourceImg(g_data[key])){
 	    var icon = getData(this, "res");
 	    var exists = true;
 	    if (!icon){
 		icon = $(clone("iconTemplate"));
 		exists = false;
 	    }
-	    icon.attr("src", getResourceImg(g_data[key].resource));
+	    icon.attr("src", getResourceImg(g_data[key]));
 	    setData(this, "res", $(icon));
 	    if (!exists){
 		var left = $(this).parent().position().left;

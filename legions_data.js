@@ -1,0 +1,1 @@
+callback({ "70": {"name":"Генуя", "legions": "1" },"69": {"name":"Специя", "legions": "4" },"54": {"name":"Луго", "legions": "6" },"55": {"name":"Феррара", "legions": "5" },"22": {"name":"Лечче", "legions": "3" },"21": {"name":"Транто", "legions": "2" }  })
